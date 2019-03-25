@@ -16,8 +16,8 @@ export class WeatherService {
   }
 
   /** GET Searches from the server */
-	public getSearches (): Observable<WeatherModel[]>{
-	  return this.http.get<WeatherModel[]>(this.apiUrl + "/searches");
+	public getSearches (): Observable<SearchModel[]>{
+	  return this.http.get<SearchModel[]>(this.apiUrl + "/searches");
   }
  
   /** POST Searches from the server */
@@ -26,10 +26,10 @@ export class WeatherService {
   }
 
   /** GET Weather from the server */
-	public getWeather (zipCode: string, countryCode: string ): Observable<SearchModel>{
+	public getWeather (zipCode: string, countryCode: string ): Observable<WeatherModel>{
     let params = new HttpParams().set("zipCode", zipCode).set("countryCode", countryCode);
     
-	  return this.http.get<SearchModel>(this.apiUrl + "/weather", { params: params });
+	  return this.http.get<WeatherModel>(this.apiUrl + "/weather", { params: params });
   }
 
 }

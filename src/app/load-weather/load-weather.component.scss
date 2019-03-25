@@ -1,0 +1,47 @@
+$container-width: 100%;
+
+.container{
+    width: $container-width;
+}
+
+/*Styling classes for the input*/
+.showButton{
+    width: 100%;
+}
+
+.inputAddress{
+    width: 100%;
+}
+
+/*Styling classes for the weather card*/
+.weatherCard{
+    background: white;
+    margin: 20px 0px 20px 0px;
+    padding: 30px;
+}
+
+.cityText{
+    font-size: 1.7em;
+    padding: 5px;
+}
+
+.temperatureText{
+    padding-top: 10px;
+    font-size: 3em;
+    font-weight: 700;
+}
+
+/*Table styling classes*/
+.header-toolbar{
+    padding: 0px;
+}
+
+.mat-toolbar{
+    background: transparent;
+}
+
+table {
+    width: 100%;
+}
+
+

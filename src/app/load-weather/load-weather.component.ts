@@ -5,34 +5,21 @@ import { WeatherService } from './../services/weather.service'
 import { WeatherModel } from "./../models/WeatherModel";
 import { SearchModel } from "./../models/SearchModel";
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-];
-
 @Component({
   selector: 'app-load-weather',
   templateUrl: './load-weather.component.html',
   styleUrls: ['./load-weather.component.scss']
 })
 export class LoadWeatherComponent implements OnInit {
-  public addressInput: string = "";
-
-  public displayedColumns: string[] = ['date', 'address', 'weather', 'icon'];
-  public dataSource = ELEMENT_DATA;
-
+  public addressInput: string = "Loadsmart";
+  public infoCard = {address: "New York City, NY", temp: 70}
   public weatherSearches: SearchModel[];
+  public displayedColumns: string[] = ['date', 'address', 'weather', 'icon'];
 
   constructor(private weatherService: WeatherService) { }
 
+  //@ViewChild("placesRef") placesRef : GooglePlaceDirective;
+  
   ngOnInit() {
     this.weatherService.getSearches().subscribe((data) => {
       this.weatherSearches = <SearchModel[]>data;
@@ -55,17 +42,67 @@ export class LoadWeatherComponent implements OnInit {
     //})
   }
 
+  public processSearch(address: any){
+    console.log(address);
+
+    var processedInfo = this.processAddress(address);
+
+    console.log(processedInfo);
+
+    if(processedInfo.zipCode == "" || processedInfo.countryCode == ""){
+      //Show message asking for user to be specific
+      return
+    }
+
+    this.weatherService.getWeather(processedInfo.zipCode, processedInfo.countryCode).subscribe((weatherData) => {
+      
+      //do what I have to do in the UI, show the weather or ask for more info for example
+      
+      this.infoCard.address = processedInfo.formattedAddress;
+      this.infoCard.temp = weatherData.temp;
+
+      var newSearch = <SearchModel>{date: new Date(), address: processedInfo.formattedAddress, weather: weatherData.temp, icon: weatherData.icon};
+      
+      var updatedWeatherSearches = this.weatherSearches.slice()
+      updatedWeatherSearches.unshift(newSearch);
+      this.weatherSearches = updatedWeatherSearches;
+
+      //this.weatherService.postSearches(newSearch).subscribe((postedSearch) => {
+      //  console.log(postedSearch);
+      //})
+
+    })
+    
+  }
+
   public getSearches(){
 
   }
 
-  public postSearches(){
-    
+  public postSearches(newSearch: SearchModel): void{
+    this.weatherService.postSearches(newSearch).subscribe((data) => {
+     console.log(data);
+    })
   }
   
-  public getWeather(){
+  public processAddress(address: any) {
+    var zipCode: string = "";
+    var countryCode: string = "";
+    var formattedAddress: string = address['formatted_address'];
 
+    console.log("LAT: " + address['geometry']['location'].lat() + "LONG: " + address['geometry']['location'].lng())
+    for( let results of address['address_components']){
+      
+      if(results['types'].indexOf('postal_code') > -1){
+        zipCode = results['short_name'];
+      }
+      if(results['types'].indexOf('country') > -1){
+        countryCode = results['short_name'];
+      }
+    }
+
+    
+    return {"zipCode": zipCode, "countryCode": countryCode, "formattedAddress": formattedAddress}
   }
-
 
 }

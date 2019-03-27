@@ -9,8 +9,8 @@ import { SearchModel } from "./../models/SearchModel";
   providedIn: 'root'
 })
 export class WeatherService {
-  private apiUrl = 'http://localhost:5000';  // URL to web api
-
+  private apiUrl = 'http://localhost:5000';
+  private API_KEY = 'AIzaSyBQTAjsIOaXGloD0Bxq44-v9pT3ldA9haw';
 
   constructor(private http: HttpClient) {
   }
@@ -32,4 +32,12 @@ export class WeatherService {
 	  return this.http.get<WeatherModel>(this.apiUrl + "/weather", { params: params });
   }
 
+  /** GET ZipCode from a Lat and Long */
+  public getAddress (lat: number, long: number ): any{
+    let params = new HttpParams().set("latlng", (lat + "," + long))
+    .set("key", this.API_KEY);
+
+	  return this.http.get<any[]>("https://maps.googleapis.com/maps/api/geocode/json", { params: params });
+  }
 }
+

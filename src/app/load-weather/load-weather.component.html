@@ -37,14 +37,13 @@
     <div fxFlex="5"></div>
 
   <table mat-table [dataSource]="weatherSearches" class="mat-elevation-z8">
-
       <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
     
       <!-- Date Column -->
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Date </th>
-        <td mat-cell *matCellDef="let element"> {{element.date | date: 'dd/MM/yyyy'}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.date | date: 'dd/MM/yyyy'}} - {{element.date | date: 'HH:MM'}} </td>
       </ng-container>
     
       <!-- Address Column -->
@@ -55,14 +54,14 @@
     
       <!-- Weather Column -->
       <ng-container matColumnDef="weather">
-        <th mat-header-cell *matHeaderCellDef> Weather </th>
+        <th mat-header-cell *matHeaderCellDef> Temperature </th>
         <td mat-cell *matCellDef="let element"> {{element.weather}} ° C</td>
       </ng-container>
     
       <!-- Icon Column -->
       <ng-container matColumnDef="icon">
-        <th mat-header-cell *matHeaderCellDef> Icon </th>
-        <td mat-cell *matCellDef="let element"> {{element.icon}} </td>
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element"> <img src={{element.icon}} alt="Smiley face" > </td>
       </ng-container>
     
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

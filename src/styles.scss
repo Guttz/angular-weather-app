@@ -1,6 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/* You can add global styles to this file, and also import other style files
+Default ones:
+deeppurple-amber.css
+indigo-pink.css
+pink-bluegrey.css
+purple-green.css
+ */
+ @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
+ // Import library functions for theme creation.
+ @import '~@angular/material/theming';
+ 
+ // Include non-theme styles for core.
+ @include mat-core();
+ 
+ // Define your application's custom theme.
+ $primary: mat-palette($mat-indigo);
+ //$primary: mat-palette($mat-light-green, A400, A400, A400);
+ $accent:  mat-palette($mat-pink, A200, A100, A400);
+ $disabled: mat-palette($mat-pink, A200, A100, A400);
+ $theme: mat-light-theme($primary, $accent);
+ 
+ // Include theme styles for Angular Material components.
+ @include angular-material-theme($theme);
+ 
+ body{
+     margin: 0px;
+ }
+ 
 body{
     margin: 0px;
     background: #F2F2F2;

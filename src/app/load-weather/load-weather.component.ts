@@ -14,49 +14,44 @@ import { SearchModel } from "./../models/SearchModel";
 })
 export class LoadWeatherComponent implements OnInit {
   //Address control variables
-  public addressInput: string = "Loadsmart";
+  public addressInput: string = "New York";
   public errorComponent = {show: false, msg: "Sorry, our platform doesn't support this address"}
   
-  public infoCard = {address: {city: "New York", state: "NY", country: "United States"}, temp: 70}
-  public weatherSearches: SearchModel[];
+  //Card control variables
+  public infoCard = {address: {city: "New York", state: "NY", country: "United States", fullAddress: "459 Broadway, New York, NY 10013, USA"}, temp: 70}
+  
+  //Table control variables
+  public weatherSearches: SearchModel[] = null;
   public displayedColumns: string[] = ['date', 'address', 'weather', 'icon'];
-
 
   constructor(private weatherService: WeatherService) { }
 
   ngOnInit() {
-    this.weatherService.getSearches().subscribe((data) => {
-      this.weatherSearches = <SearchModel[]>data;
-      console.log(this.weatherSearches);
-    })
-
-    this.weatherService.getWeather("88000-000", "br").subscribe((data) => {
-      console.log(data);
-    })
-
-    var newSearch = <SearchModel>{
-      "address": "New York City, NY",
-      "date": new Date(),
-      "icon": "04d",
-      "weather": 73
-    }
-
-    //this.weatherService.postSearches(newSearch).subscribe((data) => {
-    //  console.log(data);
-    //})
+    this.getSearches();
   }
 
   public processSearch(address: any){
+    this.errorComponent.show = false;
     console.log(address);
 
     var processedInfo = this.processAddress(address);
 
     console.log(processedInfo);
 
-    this.errorComponent.show = false;
+    if(this.checkCache(processedInfo)){
+      var cachedValue = this.checkCache(processedInfo);
+      this.infoCard.temp = cachedValue.weather;
+      this.infoCard.address = processedInfo.formattedAddress;
+      return;
+    }
+
     if(processedInfo.zipCode == ""){
-      this.errorComponent.show = true;
-      this.errorComponent.msg = "Invalid Adress. Please provide a more specific address";
+      var lat = address['geometry']['location'].lat();
+      var lng = address['geometry']['location'].lng();
+
+      this.weatherService.getAddress(lat, lng).subscribe( (places) => {
+        this.processSearch(places.results[0]);
+      })
       return
     }else if(processedInfo.countryCode == ""){
       this.errorComponent.show = true;
@@ -65,34 +60,39 @@ export class LoadWeatherComponent implements OnInit {
     }
 
     this.weatherService.getWeather(processedInfo.zipCode, processedInfo.countryCode).subscribe((weatherData) => {
-      //do what I have to do in the UI, show the weather or ask for more info for example
-      this.infoCard.address = processedInfo.formattedAddress;
       this.infoCard.temp = weatherData.temp;
+      this.infoCard.address = processedInfo.formattedAddress;
 
       var newSearch = <SearchModel>{date: new Date(),
-        address: processedInfo.formattedAddress.city + ", " + processedInfo.formattedAddress.state
-        + " - " + processedInfo.formattedAddress.country,
-        weather: weatherData.temp, icon: weatherData.icon};
+        address: processedInfo.formattedAddress.city + ", " +
+        processedInfo.formattedAddress.state,
+        weather: weatherData.temp,
+        icon: "assets/weather-icons/" + weatherData.icon + ".png"};
       
+
       var updatedWeatherSearches = this.weatherSearches.slice()
       updatedWeatherSearches.unshift(newSearch);
       this.weatherSearches = updatedWeatherSearches;
-
-      //this.weatherService.postSearches(newSearch).subscribe((postedSearch) => {
-      //  console.log(postedSearch);
-      //})
-
+      
+      //Uncomment this to send Search to Database - Commented to avoid creating a unnecessary big file
+      //this.postSearches(newSearch);
+    },
+    (err) => {
+      this.errorComponent.show = true;
+      this.errorComponent.msg = "This location is not support by our Weather Provider";
     })
-    
   }
 
   public getSearches(){
-
+    this.weatherService.getSearches().subscribe((data) => {
+      this.weatherSearches = <SearchModel[]>data;
+      console.log(this.weatherSearches);
+    })
   }
 
   public postSearches(newSearch: SearchModel): void{
     this.weatherService.postSearches(newSearch).subscribe((data) => {
-     console.log(data);
+      console.log(data);
     })
   }
   
@@ -104,9 +104,11 @@ export class LoadWeatherComponent implements OnInit {
   public processAddress(address: any) {
     var zipCode: string = "";
     var countryCode: string = "";
-    var formattedAddress = {city: "", state: "", country: ""};
+    var formattedAddress = {city: "", state: "", country: "",
+                            fullAddress : address['formatted_address']};
 
-    console.log("LAT: " + address['geometry']['location'].lat() + "LONG: " + address['geometry']['location'].lng())
+    
+    //console.log("LAT: " + address['geometry']['location'].lat() + "LONG: " + address['geometry']['location'].lng())
     for( let results of address['address_components']){
       
       if(results['types'].indexOf('postal_code') > -1){
@@ -123,9 +125,29 @@ export class LoadWeatherComponent implements OnInit {
         formattedAddress['state'] = results['short_name'];
       }
     }
-
     
-    return {"zipCode": zipCode, "countryCode": countryCode, "formattedAddress": formattedAddress}
+    return {"zipCode": zipCode, "countryCode": countryCode,
+     "formattedAddress": formattedAddress}
+  }
+
+  public checkCache(addressObject){
+    var currentDate = (new Date()).getTime();
+    var cacheTime = 3600000;
+
+    for(let weatherLog of this.weatherSearches){
+      var formattedAddress = addressObject.formattedAddress.city + ", " +
+      addressObject.formattedAddress.state;
+
+      if(weatherLog.address == formattedAddress){
+        var weatherLogMiliseconds = weatherLog.date.getTime();
+        var timeGap = currentDate - weatherLogMiliseconds;
+        if(timeGap < cacheTime){
+          return weatherLog;
+        }
+      }
+    }
+
+    return null;
   }
 
 }

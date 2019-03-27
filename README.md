@@ -1,5 +1,5 @@
 # Loadsmart Weather Application
-This is the frontend for an weather web application/coding task for Loadsmart. It's an Angular based application with Angular Material for the core components. Also it uses Googles autocomplete service to fetch addressed and search terms.
+This is the frontend for a weather web application/coding task for Loadsmart. It's an Angular based application with Angular Material for the core components. Also, it uses Googles autocomplete service to fetch addresses and search terms.
 
 ## Requirements
 - Node.js version 8.x or 10.x
@@ -10,7 +10,7 @@ This is the frontend for an weather web application/coding task for Loadsmart. I
 ```
 npm install -g @angular/cli
 ```
-More info/Ref: https://angular.io/guide/quickstart
+More info: https://angular.io/guide/quickstart
 
 ## To setup the dependencies run:
 
@@ -51,6 +51,6 @@ More about that on: https://openweathermap.desk.com/customer/portal/questions/16
 - Provide address support when clicking on button
 
 ### Observations:
-The task required to fetch the ZipCode when the user provided an specific address, and that was implemented exactly like that. However, with that the user has to always provide a street to get a ZipCode. That said, to make the experience better an second routine to find a approximate Zipcode for generic places like cities and business was implemented as well. 
+The described coding task required the developer to fetch the ZipCode when the user provided an specific address, and that works and was implemented exactly like that. However, with that the user has to always provide a street/specific address to get a ZipCode. That said, to make the experience better a second routine to find an approximate Zipcode for generic places like cities and business was implemented as well. 
 
 

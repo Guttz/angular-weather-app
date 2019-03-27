@@ -74,8 +74,7 @@ export class LoadWeatherComponent implements OnInit {
       updatedWeatherSearches.unshift(newSearch);
       this.weatherSearches = updatedWeatherSearches;
       
-      //Uncomment this to send Search to Database - Commented to avoid creating a unnecessary big file
-      //this.postSearches(newSearch);
+      this.postSearches(newSearch);
     },
     (err) => {
       this.errorComponent.show = true;
@@ -107,8 +106,6 @@ export class LoadWeatherComponent implements OnInit {
     var formattedAddress = {city: "", state: "", country: "",
                             fullAddress : address['formatted_address']};
 
-    
-    //console.log("LAT: " + address['geometry']['location'].lat() + "LONG: " + address['geometry']['location'].lng())
     for( let results of address['address_components']){
       
       if(results['types'].indexOf('postal_code') > -1){

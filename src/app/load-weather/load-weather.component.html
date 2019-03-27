@@ -19,7 +19,7 @@
   <div fxFlex="40" fxFlexOffset="10" fxLayoutAlign="center center">
     <div fxLayout="column" fxLayoutAlign="center center" fxFlex="70" class="weatherCard mat-elevation-z8">
       <span class="cityText" > {{infoCard.address.city}}, {{infoCard.address.state}}</span>
-      <span class="temperatureText"> {{infoCard.temp}} ° C</span>
+      <span class="temperatureText"> {{infoCard.temp}} ° F</span>
     </div>
   </div>
 
@@ -55,7 +55,7 @@
       <!-- Weather Column -->
       <ng-container matColumnDef="weather">
         <th mat-header-cell *matHeaderCellDef> Temperature </th>
-        <td mat-cell *matCellDef="let element"> {{element.weather}} ° C</td>
+        <td mat-cell *matCellDef="let element"> {{element.weather}} ° F</td>
       </ng-container>
     
       <!-- Icon Column -->

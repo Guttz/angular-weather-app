@@ -13,6 +13,12 @@ $container-width: 100%;
     width: 100%;
 }
 
+.errorMsg{
+    color: red;
+    font-size: 0.8em;
+    padding-bottom: 13px;
+}
+
 /*Styling classes for the weather card*/
 .weatherCard{
     background: white;

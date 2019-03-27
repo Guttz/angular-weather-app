@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
@@ -10,7 +10,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoadWeatherComponent } from './load-weather/load-weather.component';
 import { HeaderToolbarComponent } from './header-toolbar/header-toolbar.component';
-
 
 //Angular Material imports
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -36,6 +35,7 @@ import { GooglePlaceModule } from "ngx-google-places-autocomplete";
     MatToolbarModule,
     MatInputModule,
     FormsModule,
+    ReactiveFormsModule,
     MatIconModule,
     MatButtonModule,
     MatTableModule,

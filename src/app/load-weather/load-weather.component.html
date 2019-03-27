@@ -1,19 +1,24 @@
 <div fxLayout="row" class="container">
   <div fxFlex="5"></div>
 
-  <div fxLayout="column" fxFlex="40" fxLayoutAlign="center center">
+  <div fxLayout="column" fxFlex="40" fxLayoutAlign="center start">
     <mat-form-field class="inputAddress">
-      <input matInput ngx-google-places-autocomplete options="{types: ['address', 'geocode', '(regions)']}" (onAddressChange)="processSearch($event)" type="text" placeholder="Enter an address..." [(ngModel)]="addressInput">
+      <input matInput ngx-google-places-autocomplete
+      options="{types: ['address', 'geocode', '(regions)']}"
+      (onAddressChange)="processSearch($event)"
+      type="text" placeholder="Enter an address..."
+      [(ngModel)]="addressInput">
       <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="X" (click)="addressInput=''">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
-    <button mat-raised-button color="primary" class="showButton" >Show me the current temperature</button>
+    <span *ngIf="errorComponent.show" class="errorMsg"> {{errorComponent.msg}}</span>
+    <button mat-raised-button color="primary" (click)="searchWeather()" class="showButton" >Show me the current temperature</button>
   </div>
 
   <div fxFlex="40" fxFlexOffset="10" fxLayoutAlign="center center">
     <div fxLayout="column" fxLayoutAlign="center center" fxFlex="70" class="weatherCard mat-elevation-z8">
-      <span class="cityText" > {{infoCard.address}}</span>
+      <span class="cityText" > {{infoCard.address.city}}, {{infoCard.address.state}}</span>
       <span class="temperatureText"> {{infoCard.temp}} ° C</span>
     </div>
   </div>

@@ -7,13 +7,14 @@
       options="{types: ['address', 'geocode', '(regions)']}"
       (onAddressChange)="processSearch($event)"
       type="text" placeholder="Enter an address..."
-      [(ngModel)]="addressInput">
-      <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="X" (click)="addressInput=''">
-        <mat-icon>close</mat-icon>
+      [(ngModel)]="addressInput"
+      #addressInputID>
+      <button mat-button matSuffix mat-icon-button aria-label="X" (click)="searchWeather()">
+        <mat-icon>send</mat-icon>
       </button>
     </mat-form-field>
     <span *ngIf="errorComponent.show" class="errorMsg"> {{errorComponent.msg}}</span>
-    <button mat-raised-button color="primary" (click)="searchWeather()" class="showButton" >Show me the current temperature</button>
+    <button mat-raised-button color="primary" (click)="addressInputID.focus(); searchWeather()" class="showButton" >Search for the current temperature</button>
   </div>
 
   <div fxFlex="40" fxFlexOffset="10" fxLayoutAlign="center center">

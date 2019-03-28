@@ -14,11 +14,11 @@ import { SearchModel } from "./../models/SearchModel";
 })
 export class LoadWeatherComponent implements OnInit {
   //Address control variables
-  public addressInput: string = "New York";
+  public addressInput: string = "Loadsmart, NY";
   public errorComponent = {show: false, msg: "Sorry, our platform doesn't support this address"}
   
   //Card control variables
-  public infoCard = {address: {city: "New York", state: "NY", country: "United States", fullAddress: "459 Broadway, New York, NY 10013, USA"}, temp: 70}
+  public infoCard = {address: {city: "New York", state: "NY", country: "United States", fullAddress: "459 Broadway, New York, NY 10013, USA"}, temp: 38.57}
   
   //Table control variables
   public weatherSearches: SearchModel[] = null;
@@ -32,14 +32,11 @@ export class LoadWeatherComponent implements OnInit {
 
   public processSearch(address: any){
     this.errorComponent.show = false;
-    console.log(address);
-
     var processedInfo = this.processAddress(address);
 
-    console.log(processedInfo);
-
-    if(this.checkCache(processedInfo)){
-      var cachedValue = this.checkCache(processedInfo);
+    var cacheCheck = this.checkCache(processedInfo);
+    if(cacheCheck){
+      var cachedValue = cacheCheck;
       this.infoCard.temp = cachedValue.weather;
       this.infoCard.address = processedInfo.formattedAddress;
       return;
@@ -136,7 +133,7 @@ export class LoadWeatherComponent implements OnInit {
       addressObject.formattedAddress.state;
 
       if(weatherLog.address == formattedAddress){
-        var weatherLogMiliseconds = weatherLog.date.getTime();
+        var weatherLogMiliseconds = (new Date(weatherLog.date).getTime());
         var timeGap = currentDate - weatherLogMiliseconds;
         if(timeGap < cacheTime){
           return weatherLog;

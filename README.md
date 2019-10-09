@@ -1,5 +1,5 @@
 # Weather Application
-This ia an Angular Web App application with Angular Material for the core components. Also, it uses Googles autocomplete service to fetch addresses and search terms and OpenWeather API to fetch the weather. **Necessary backend to run the application** https://github.com/Guttz/openapi-weather-app-server.
+This is an Angular Web App application with Angular Material for the core components. Also, it uses Googles autocomplete service to fetch addresses and search terms and OpenWeather API to fetch the weather. **Necessary backend to run the application** https://github.com/Guttz/openapi-weather-app-server.
 
 ## Requirements
 - Node.js version 8.x or 10.x

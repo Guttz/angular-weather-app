@@ -1,5 +1,5 @@
-# Loadsmart Weather Application
-This is the frontend for a weather web application/coding task for Loadsmart. It's an Angular based application with Angular Material for the core components. Also, it uses Googles autocomplete service to fetch addresses and search terms.
+# Weather Application
+This ia an Angular Web App application with Angular Material for the core components. Also, it uses Googles autocomplete service to fetch addresses and search terms and OpenWeather API to fetch the weather.
 
 ## Requirements
 - Node.js version 8.x or 10.x
@@ -26,7 +26,6 @@ ng serve --open
 Navigate to `http://localhost:4200/` and try the application(Make sure you have the Backend running)
 
 ## Sample tests
-- Loadsmart **(Business)**
 - Taj Mahal **(Touristic Attraction)**
 - Berlin **(City)** 
 - Japan, Tokyo, Chiyoda City, Marunouchi, 1 Chome−5, marunouchi house **(Specific address)** 

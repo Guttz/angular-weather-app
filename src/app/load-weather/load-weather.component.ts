@@ -14,7 +14,7 @@ import { SearchModel } from "./../models/SearchModel";
 })
 export class LoadWeatherComponent implements OnInit {
   //Address control variables
-  public addressInput: string = "Loadsmart, NY";
+  public addressInput: string = "Berlin, Deutschland";
   public errorComponent = {show: false, msg: "Sorry, our platform doesn't support this address"}
   
   //Card control variables

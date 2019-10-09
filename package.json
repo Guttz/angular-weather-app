@@ -1,5 +1,5 @@
 {
-  "name": "frontend-loadsmart",
+  "name": "angular-weather-openapi",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",

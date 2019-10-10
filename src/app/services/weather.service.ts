@@ -9,10 +9,24 @@ import { SearchModel } from "./../models/SearchModel";
   providedIn: 'root'
 })
 export class WeatherService {
+
   private apiUrl = 'http://localhost:5000';
+  // Public GCloud API_KEY, IP/Website restrictions were imposed online 
   private API_KEY = 'AIzaSyBQTAjsIOaXGloD0Bxq44-v9pT3ldA9haw';
 
   constructor(private http: HttpClient) {
+    if(window.location.href.match(/www/) != null){
+         this.apiUrl = "http://www.35.226.208.127:5000";
+       }
+      else{
+        if(window.location.href.match(/local/) != null){
+           this.apiUrl = "http://localhost:5000";
+         }
+         else{
+           this.apiUrl = "http://35.226.208.127:5000";
+         }
+         
+       }
   }
 
   /** GET Searches from the server */

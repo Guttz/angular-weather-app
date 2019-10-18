@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
-//Services used 
+// Services used
 import { WeatherService } from './../services/weather.service'
 
-//Data models used
-import { WeatherModel } from "./../models/WeatherModel";
-import { SearchModel } from "./../models/SearchModel";
+// Data models used
+import { WeatherModel } from './../models/WeatherModel';
+import { SearchModel } from './../models/SearchModel';
 
 @Component({
   selector: 'app-load-weather',
@@ -13,14 +13,24 @@ import { SearchModel } from "./../models/SearchModel";
   styleUrls: ['./load-weather.component.scss']
 })
 export class LoadWeatherComponent implements OnInit {
-  //Address control variables
-  public addressInput: string = "Berlin, Deutschland";
-  public errorComponent = {show: false, msg: "Sorry, our platform doesn't support this address"}
-  
-  //Card control variables
-  public infoCard = {address: {city: "New York", state: "NY", country: "United States", fullAddress: "459 Broadway, New York, NY 10013, USA"}, temp: 38.57}
-  
-  //Table control variables
+  // Address control variables
+  public addressInput: string = 'Berlin, Deutschland';
+  public errorComponent = {
+    show: false,
+    msg: "Sorry, our platform doesn't support this address"
+  }
+
+  // Card control variables
+  public infoCard = {
+    address:{
+      city: "New York",
+      state: "NY",
+      country: "United States",
+      fullAddress: "459 Broadway, New York, NY 10013, USA"
+    },
+      temp: 38.57};
+
+  // Table control variables
   public weatherSearches: SearchModel[] = null;
   public displayedColumns: string[] = ['date', 'address', 'weather', 'icon'];
 
@@ -30,111 +40,109 @@ export class LoadWeatherComponent implements OnInit {
     this.getSearches();
   }
 
-  public processSearch(address: any){
+  public processSearch(address: any) {
     this.errorComponent.show = false;
-    var processedInfo = this.processAddress(address);
+    const processedInfo = this.processAddress(address);
 
-    var cacheCheck = this.checkCache(processedInfo);
-    if(cacheCheck){
-      var cachedValue = cacheCheck;
+    const cacheCheck = this.checkCache(processedInfo);
+    if (cacheCheck) {
+      const cachedValue = cacheCheck;
       this.infoCard.temp = cachedValue.weather;
       this.infoCard.address = processedInfo.formattedAddress;
       return;
     }
 
-    if(processedInfo.zipCode == ""){
-      var lat = address['geometry']['location'].lat();
-      var lng = address['geometry']['location'].lng();
+    if (processedInfo.zipCode === '') {
+      const lat = address['geometry']['location'].lat();
+      const lng = address['geometry']['location'].lng();
 
       this.weatherService.getAddress(lat, lng).subscribe( (places) => {
         this.processSearch(places.results[0]);
       })
-      return
-    }else if(processedInfo.countryCode == ""){
+      return null;
+    } else if (processedInfo.countryCode === '') {
       this.errorComponent.show = true;
-      this.errorComponent.msg = "This country is not supported by our platform";
-      return
+      this.errorComponent.msg = 'This country is not supported by our platform';
+      return null;
     }
 
-    this.weatherService.getWeather(processedInfo.zipCode, processedInfo.countryCode).subscribe((weatherData) => {
+    this.weatherService.getWeather(processedInfo.zipCode, processedInfo.countryCode)
+    .subscribe((weatherData) => {
       this.infoCard.temp = weatherData.temp;
       this.infoCard.address = processedInfo.formattedAddress;
 
-      var newSearch = <SearchModel>{date: new Date(),
-        address: processedInfo.formattedAddress.city + ", " +
+      const newSearch = <SearchModel>{date: new Date(),
+        address: processedInfo.formattedAddress.city + ', ' +
         processedInfo.formattedAddress.state,
         weather: weatherData.temp,
-        icon: "assets/weather-icons/" + weatherData.icon + ".png"};
-      
+        icon: 'assets/weather-icons/' + weatherData.icon + '.png'};
 
-      var updatedWeatherSearches = this.weatherSearches.slice()
+
+      const updatedWeatherSearches = this.weatherSearches.slice();
       updatedWeatherSearches.unshift(newSearch);
       this.weatherSearches = updatedWeatherSearches;
-      
+
       this.postSearches(newSearch);
     },
     (err) => {
       this.errorComponent.show = true;
       this.errorComponent.msg = "This location is not support by our Weather Provider";
-    })
+    });
   }
 
-  public getSearches(){
+  public getSearches() {
     this.weatherService.getSearches().subscribe((data) => {
       this.weatherSearches = <SearchModel[]>data;
       console.log(this.weatherSearches);
-    })
+    });
   }
 
-  public postSearches(newSearch: SearchModel): void{
+  public postSearches(newSearch: SearchModel): void {
     this.weatherService.postSearches(newSearch).subscribe((data) => {
       console.log(data);
-    })
+    });
   }
-  
+
   public searchWeather(){
     this.errorComponent.show = true;
     this.errorComponent.msg = "Invalid Adress. Please provide a more specific address";
   }
 
   public processAddress(address: any) {
-    var zipCode: string = "";
-    var countryCode: string = "";
-    var formattedAddress = {city: "", state: "", country: "",
+    let zipCode: string = "";
+    let countryCode: string = "";
+    const formattedAddress = {city: "", state: "", country: "",
                             fullAddress : address['formatted_address']};
 
-    for( let results of address['address_components']){
-      
-      if(results['types'].indexOf('postal_code') > -1){
+    for ( let results of address['address_components'] ){
+
+      if (results['types'].indexOf('postal_code') > -1) {
         zipCode = results['short_name'];
-      }
-      else if(results['types'].indexOf('country') > -1){
+      } else if (results['types'].indexOf('country') > -1) {
         countryCode = results['short_name'];
         formattedAddress['country'] = results['long_name'];
-      }
-      else if(results['types'].indexOf('locality') > -1){
+      } else if (results['types'].indexOf('locality') > -1) {
         formattedAddress['city'] = results['long_name'];
-      }
-      else if(results['types'].indexOf('administrative_area_level_1') > -1){
+      } else if (results['types'].indexOf('administrative_area_level_1') > -1) {
         formattedAddress['state'] = results['short_name'];
       }
     }
-    
+
     return {"zipCode": zipCode, "countryCode": countryCode,
-     "formattedAddress": formattedAddress}
+            "formattedAddress": formattedAddress};
   }
 
   public checkCache(addressObject){
-    var currentDate = (new Date()).getTime();
-    var cacheTime = 3600000;
+    const currentDate = (new Date()).getTime();
+    const cacheTime = 3600000;
 
     for(let weatherLog of this.weatherSearches){
-      var formattedAddress = addressObject.formattedAddress.city + ", " +
+      const formattedAddress = addressObject.formattedAddress.city + ", " +
       addressObject.formattedAddress.state;
 
       if(weatherLog.address == formattedAddress){
-        var weatherLogMiliseconds = (new Date(weatherLog.date).getTime());
-        var timeGap = currentDate - weatherLogMiliseconds;
+        let weatherLogMiliseconds = (new Date(weatherLog.date).getTime());
+        let timeGap = currentDate - weatherLogMiliseconds;
         if(timeGap < cacheTime){
           return weatherLog;
         }
